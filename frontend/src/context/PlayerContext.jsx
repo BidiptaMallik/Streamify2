@@ -10,6 +10,8 @@ const PlayerContextProvider = ({ children }) => {
     const seekBar = useRef(null);
     const seekBg = useRef(null);
 
+    const url = 'http://localhost:4000';
+
     const [track, setTrack] = useState(songsData[1]);
     const [playStatus, setPlayStatus] = useState(false);
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { assets } from '../assets/assets'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -14,6 +14,27 @@ const AddSong = () => {
   const [album, setAlbum] = useState("none")
   const [loading, setLoading] = useState(false)
   const [albumData, setAlbumData] = useState([])
+
+  // 🔥 fetch albums
+  const fetchAlbums = async () => {
+    try {
+      const response = await axios.get(`${url}/api/albums/list`)
+
+      if (response.data.success) {
+        setAlbumData(response.data.albums)
+      } else {
+        toast.error("Failed to load albums")
+      }
+
+    } catch (error) {
+      console.log(error)
+      toast.error("Server error")
+    }
+  }
+
+  useEffect(() => {
+    fetchAlbums()
+  }, [])
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
@@ -68,6 +89,7 @@ const AddSong = () => {
 
       <div className='flex gap-8'>
 
+        {/* Upload Song */}
         <div className='flex flex-col gap-4'>
           <p>Upload song</p>
           <input 
@@ -95,6 +117,7 @@ const AddSong = () => {
           {song && <p className="text-sm text-green-600">{song.name}</p>}
         </div>
 
+        {/* Upload Image */}
         <div className='flex flex-col gap-4'>
           <p>Upload cover</p>
           <input 
@@ -116,6 +139,7 @@ const AddSong = () => {
 
       </div>
 
+      {/* Song Name */}
       <div className='flex flex-col gap-2.5'>
         <p>Song name</p>
         <input 
@@ -128,6 +152,7 @@ const AddSong = () => {
         />
       </div>
 
+      {/* Description */}
       <div className='flex flex-col gap-2.5'>
         <p>Song description</p>
         <input 
@@ -140,6 +165,7 @@ const AddSong = () => {
         />
       </div>
 
+      {/* Album Dropdown */}
       <div className='flex flex-col gap-2.5'>
         <p>Album</p>
         <select 
@@ -148,10 +174,17 @@ const AddSong = () => {
           className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500'
         >
           <option value="none">None</option>
-          {albumData.map((item, index) => (
-            <option key={index} value={item.name}>{item.name}</option>
+
+          {albumData.map((item) => (
+            <option key={item._id} value={item._id}>
+              {item.name}
+            </option>
           ))}
         </select>
+
+        {albumData.length === 0 && (
+          <p className="text-sm text-gray-400">No albums available</p>
+        )}
 
         <button 
           className='text-base text-white bg-black px-14 py-2.5 cursor-pointer hover:bg-gray-800 transition' 
