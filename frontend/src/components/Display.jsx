@@ -1,31 +1,33 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useContext } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import DisplayHome from './DisplayHome'
-import DsiplayAlbum from './DsiplayAlbum'
-import { albumsData } from '../assets/assets'
+import DisplayAlbum from './DisplayAlbum'
+import { PlayerContext } from '../context/PlayerContext'
 
 const Display = () => {
 
-  const displayRef = useRef();
-  const location = useLocation();
-  const isAlbum = location.pathname.includes('/album/');
-  const albumId = isAlbum ? location.pathname.slice(-1) : "";
-  const bgColor = albumsData[Number(albumId)].bgColor;
+  const { albumsData } = useContext(PlayerContext)
+  const location = useLocation()
 
-  useEffect(() => {
-  if (isAlbum) {
-    displayRef.current.style.background = `linear-gradient(${bgColor}, #121212)`;
+  const isAlbum = location.pathname.includes('/album/')
+  const id = isAlbum ? location.pathname.split('/').pop() : null
+
+  const albumData = albumsData.find(item => item._id === id)
+
+  const bgStyle = {
+    background: isAlbum && albumData
+      ? `linear-gradient(${albumData.bgColor}, #121212)`
+      : '#121212'
   }
-  else {
-    displayRef.current.style.background = '#121212';
-  }
-  }, [isAlbum, bgColor]);
 
   return (
-    <div ref={displayRef} className='w-full m-2 px-6 pt-4 rounded bg-[#121212] text-white overflow-y-auto overflow-x-hidden lg:w-[75%]'>
+    <div
+      style={bgStyle}
+      className='w-full m-2 px-6 pt-4 rounded text-white overflow-y-auto overflow-x-hidden lg:w-[75%]'
+    >
       <Routes>
         <Route path='/' element={<DisplayHome />} />
-        <Route path='/album/:id' element={<DsiplayAlbum />} />
+        <Route path='/album/:id' element={<DisplayAlbum />} />
       </Routes>
     </div>
   )

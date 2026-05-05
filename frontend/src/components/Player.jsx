@@ -19,7 +19,7 @@ const Player = () => {
 
     const format = (num) => String(num || 0).padStart(2, '0');
 
-    return (
+    return track?(
         <div className='fixed bottom-0 left-0 w-full h-[10%] bg-black text-white flex items-center px-4'>
 
             <div className='items-center hidden gap-4 lg:flex'>
@@ -83,7 +83,7 @@ const Player = () => {
                 <img className='w-4 cursor-pointer' src={assets.zoom_icon} alt="" />
             </div>
         </div>
-    );
+    ) : null;
 };
 
 export default Player;
